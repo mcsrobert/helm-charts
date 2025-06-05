@@ -9,7 +9,8 @@
     "packageRules": [
       {
         "matchFileNames": [".github/workflows/**"],
-        "commitMessagePrefix": "[CI] "
+        "commitMessagePrefix": "[CI] ",
+        "groupName": "github-workflow dependency updates"
       },
       {
         "matchFileNames": ["charts/**"],
