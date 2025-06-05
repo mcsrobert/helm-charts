@@ -23,6 +23,13 @@
         "matchStrings": ["appVersion:\\s*\"(?<currentValue>.*?)\""],
         "depNameTemplate": "homeassistant/home-assistant",
         "datasourceTemplate": "docker"
+      },
+      {
+        "customType": "regex",
+        "fileMatch": ["^charts/homepage/Chart\\.yaml$"],
+        "matchStrings": ["appVersion:\\s*\"(?<currentValue>.*?)\""],
+        "depNameTemplate": "ghcr.io/gethomepage/homepage",
+        "datasourceTemplate": "docker"
       }
     ]
 }
