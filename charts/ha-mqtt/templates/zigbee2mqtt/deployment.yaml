@@ -1,0 +1,72 @@
+{{- with .Values.zigbee2mqtt }}
+{{- if .enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "zigbee2mqtt.fullname" $ }}
+  labels:
+    {{- include "zigbee2mqtt.labels" $ | nindent 4 }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "zigbee2mqtt.selectorLabels" $ | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        {{- .podAnnotations | toYaml | nindent 8 }}
+      labels:
+        {{- include "zigbee2mqtt.labels" $ | nindent 8 }}
+        {{- if .podLabels }}
+        {{- .podLabels | toYaml | nindent 8 }}
+        {{- end }}
+    spec:
+      securityContext:
+        {{- .podSecurityContext | toYaml | nindent 8 }}
+      serviceAccountName: {{ include "zigbee2mqtt.serviceAccountName" $ }}
+      nodeSelector:
+        {{ .nodeSelector | toYaml | nindent 8 }}
+      containers:
+        - name: zigbee2mqtt
+          securityContext:
+            {{- .securityContext | toYaml | nindent 12 }}
+          image: "{{ .image.repository }}:{{ .image.tag }}"
+          ports:
+            - name: http-z2m-pod
+              containerPort: 8080
+          resources:
+            {{- .resources | toYaml | nindent 12 }}
+          livenessProbe:
+            {{- .livenessProbe | toYaml | nindent 12 }}
+          readinessProbe:
+            {{- .readinessProbe | toYaml | nindent 12 }}
+          env:
+            - name: TZ
+              value: {{ $.Values.tz }}
+          envFrom:
+            - configMapRef:
+                name: zigbee2mqtt-config
+            - secretRef:
+                name: zigbee2mqtt-secret
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
+            - name: udev
+              mountPath: /run/udev
+              readOnly: true
+            - name: serial
+              mountPath: /dev/ttyACM0
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: zigbee2mqtt-data
+        - name: udev
+          hostPath:
+            path: /run/udev
+        - name: serial
+          hostPath:
+            path: {{ required "zigbee2mqtt.serial.path" .serial.path }}
+{{- end }}
+{{- end }}

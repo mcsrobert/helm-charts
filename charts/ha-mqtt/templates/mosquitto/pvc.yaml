@@ -1,0 +1,17 @@
+{{- with .Values.mosquitto.persistence }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mosquitto-data
+  labels:
+    {{- include "mosquitto.labels" $ | nindent 4 }}
+spec:
+  {{- if .storageClass }}
+  storageClassName: {{ .storageClass }}
+  {{- end }}
+  accessModes:
+    - {{ .accessMode }}
+  resources:
+    requests:
+      storage: {{ .size }}
+{{- end }}
