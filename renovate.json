@@ -1,0 +1,28 @@
+{
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "extends": ["config:recommended"],
+    "dependencyDashboard": false,
+    "prCreation": "immediate",
+    "ignorePaths": ["**/examples/**"],
+    "packageRules": [
+      {
+        "matchFileNames": ["charts/**"],
+        "bumpVersions": [
+          {
+            "filePatterns": ["{{packageFileDir}}/Chart.{yaml,yml}"],
+            "matchStrings": ["version:\\s(?<version>[^\\s]+)"],
+            "bumpType": "{{#if isPatch}}patch{{else}}minor{{/if}}"
+          }
+        ]
+      }
+    ],
+    "customManagers": [
+      {
+        "customType": "regex",
+        "fileMatch": ["^charts/ha-mqtt/Chart\\.yaml$"],
+        "matchStrings": ["appVersion:\\s*\"(?<currentValue>.*?)\""],
+        "depNameTemplate": "homeassistant/home-assistant",
+        "datasourceTemplate": "docker"
+      }
+    ]
+}
