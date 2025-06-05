@@ -1,0 +1,17 @@
+{{- with .Values.zigbee2mqtt }}
+{{- if .enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: zigbee2mqtt
+  labels:
+    {{- include "zigbee2mqtt.labels" $ | nindent 4 }}
+spec:
+  selector:
+      {{- include "zigbee2mqtt.selectorLabels" $ | nindent 4 }}
+  ports:
+    - name: http-z2m-svc
+      port: 8080
+      targetPort: http-z2m-pod
+{{- end }}
+{{- end }}

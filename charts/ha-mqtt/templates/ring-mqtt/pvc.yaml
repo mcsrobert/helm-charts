@@ -1,0 +1,21 @@
+{{- with .Values.ringMqtt }}
+{{- if .enabled }}
+{{- with .persistence }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ring-mqtt-data
+  labels:
+    {{- include "ringMqtt.labels" $ | nindent 4 }}
+spec:
+  {{- if .storageClass }}
+  storageClassName: {{ .storageClass }}
+  {{- end }}
+  accessModes:
+    - {{ .accessMode }}
+  resources:
+    requests:
+      storage: {{ .size }}
+{{- end }}
+{{- end }}
+{{- end }}

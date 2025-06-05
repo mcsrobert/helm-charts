@@ -1,0 +1,55 @@
+{{- with .Values.homeassistant }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "homeassistant.fullname" $ }}
+  labels:
+    {{- include "homeassistant.labels" $ | nindent 4 }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "homeassistant.selectorLabels" $ | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        {{- .podAnnotations | toYaml | nindent 8 }}
+      labels:
+        {{- include "homeassistant.labels" $ | nindent 8 }}
+        {{- if .podLabels }}
+        {{- .podLabels | toYaml | nindent 8 }}
+        {{- end }}
+    spec:
+      securityContext:
+        {{- .podSecurityContext | toYaml | nindent 8 }}
+      hostNetwork: {{ .hostNetwork }}
+      dnsPolicy: {{ .dnsPolicy }}
+      containers:
+        - name: homeassistant
+          securityContext:
+            {{- .securityContext | toYaml | nindent 12 }}
+          {{- with .image }}
+          image: "{{ .repository }}:{{ .tag | default $.Chart.AppVersion }}"
+          {{- end }}
+          ports:
+            - name: http-ha-pod
+              containerPort: 8123
+          resources:
+            {{- .resources | toYaml | nindent 12 }}
+          livenessProbe:
+            {{- .livenessProbe | toYaml | nindent 12 }}
+          readinessProbe:
+            {{- .readinessProbe | toYaml | nindent 12 }}
+          env:
+            - name: TZ
+              value: {{ $.Values.tz }}
+          volumeMounts:
+            - name: config
+              mountPath: /config
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: homeassistant-config
+{{- end }}

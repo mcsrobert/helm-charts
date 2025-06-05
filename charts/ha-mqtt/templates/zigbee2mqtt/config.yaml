@@ -1,0 +1,14 @@
+{{- if .Values.zigbee2mqtt.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zigbee2mqtt-config
+  labels:
+    {{- include "zigbee2mqtt.labels" $ | nindent 4 }}
+data:
+  ZIGBEE2MQTT_CONFIG_PERMIT_JOIN: "false"
+  ZIGBEE2MQTT_CONFIG_FRONTEND_ENABLED: "true"
+  ZIGBEE2MQTT_CONFIG_HOMEASSISTANT_ENABLED: "true"
+  ZIGBEE2MQTT_CONFIG_MQTT_SERVER: mqtt://mosquitto:1883
+  ZIGBEE2MQTT_CONFIG_SERIAL_PORT: /dev/ttyACM0
+{{- end }}

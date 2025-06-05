@@ -1,0 +1,55 @@
+{{- with .Values.ringMqtt }}
+{{- if .enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ringMqtt.fullname" $ }}
+  labels:
+    {{- include "ringMqtt.labels" $ | nindent 4 }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "ringMqtt.selectorLabels" $ | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "ringMqtt.labels" $ | nindent 8 }}
+        {{- if .podLabels }}
+        {{- .podLabels | toYaml | nindent 8 }}
+        {{- end }}
+      annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/ring-mqtt/secret.yaml") $ | sha256sum }}
+    spec:
+      securityContext:
+        {{- .podSecurityContext | toYaml | nindent 8 }}
+      serviceAccountName: {{ include "ringMqtt.serviceAccountName" $ }}
+      containers:
+        - name: ring-mqtt
+          image: "{{ .image.repository }}:{{ .image.tag }}"
+          # ports:
+          # - containerPort: 8554
+          resources:
+            {{- .resources | toYaml | nindent 12 }}
+          livenessProbe:
+            {{- .livenessProbe | toYaml | nindent 12 }}
+          readinessProbe:
+            {{- .readinessProbe | toYaml | nindent 12 }}
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: config
+              mountPath: /data/config.json
+              subPath: config.json
+              readOnly: true
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: ring-mqtt-data
+        - name: config
+          secret:
+            secretName: ring-mqtt-config
+{{- end }}
+{{- end }}
