@@ -8,5 +8,5 @@ maintainers:
 
 type: application
 
-version: 0.9.0
+version: 0.9.1
 appVersion: "2025.6.3"  # default Home Assistant version
