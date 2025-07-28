@@ -2,6 +2,20 @@ apiVersion: v1
 entries:
   ha-mqtt:
   - apiVersion: v2
+    appVersion: 2025.7.4
+    created: "2025-07-28T20:34:36.45737853Z"
+    description: Deploys Home Assistant and MQTT services.
+    digest: d13752907820edfa7c1794cfc8671f699a36d28659331e2d7962a55d708d1b1e
+    maintainers:
+    - email: maurice.robert1989@gmail.com
+      name: mcsrobert
+      url: https://github.com/mcsrobert
+    name: ha-mqtt
+    type: application
+    urls:
+    - https://github.com/mcsrobert/helm-charts/releases/download/ha-mqtt-0.11.4/ha-mqtt-0.11.4.tgz
+    version: 0.11.4
+  - apiVersion: v2
     appVersion: 2025.7.3
     created: "2025-07-22T22:08:18.100428067Z"
     description: Deploys Home Assistant and MQTT services.
@@ -176,4 +190,4 @@ entries:
     urls:
     - https://github.com/mcsrobert/helm-charts/releases/download/homepage-0.2.1/homepage-0.2.1.tgz
     version: 0.2.1
-generated: "2025-07-22T22:08:18.100481668Z"
+generated: "2025-07-28T20:34:36.457434217Z"
