@@ -8,5 +8,5 @@ maintainers:
 
 type: application
 
-version: 0.4.3
-appVersion: "v1.4.3"  # default Homepage version
+version: 0.4.4
+appVersion: "v1.4.4"  # default Homepage version
